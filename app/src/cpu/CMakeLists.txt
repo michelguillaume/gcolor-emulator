@@ -1,16 +1,13 @@
 # ================================================================
 # Project: Gameboy Color Emulator
 # File: CMakeLists.txt
-# Description: CMake configuration file for building the
-#              Gameboy Color Emulator. This file defines the
-#              compilation of source files and linking of libraries.
 #
 # Author: Guillaume MICHEL
-# Created on: [Date]
+# Created on: September 24, 2024
 #
-# License: [Specify License - e.g., MIT License]
+# License: MIT License
 #
-# Copyright (c) [Year] Guillaume MICHEL
+# Copyright (c) 2024 Guillaume MICHEL
 # ================================================================
 
 add_library(cpu STATIC

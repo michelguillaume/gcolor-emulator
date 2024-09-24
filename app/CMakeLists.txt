@@ -1,3 +1,15 @@
+# ================================================================
+# Project: Gameboy Color Emulator
+# File: CMakeLists.txt
+#
+# Author: Guillaume MICHEL
+# Created on: September 24, 2024
+#
+# License: MIT License
+#
+# Copyright (c) 2024 Guillaume MICHEL
+# ================================================================
+
 # Add subdirectories
 add_subdirectory(src/cpu)
 

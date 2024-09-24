@@ -15,3 +15,5 @@ bin
 cmake-build-debug
 
 .idea
+Pokemon.hexdump
+PokemonRed.gb
