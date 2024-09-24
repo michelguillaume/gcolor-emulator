@@ -2,15 +2,18 @@ cmake_minimum_required(VERSION 3.29)
 project(GColorEmulator VERSION 1.0 LANGUAGES CXX)
 
 # Set the directory for executables
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG ${CMAKE_SOURCE_DIR}/bin/Debug)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_SOURCE_DIR}/bin/Release)
+
+
+set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Add subdirectories
 add_subdirectory(app)
 # add_subdirectory(tests)
 
 # Set compilation options
-set(CMAKE_CXX_STANDARD 23)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Find SDL2 (if needed)
 # find_package(SDL2 REQUIRED)

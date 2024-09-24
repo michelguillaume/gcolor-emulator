@@ -1,14 +1,14 @@
-# Ajouter les sous-répertoires des composants
-add_subdirectory(src/emulator)
-add_subdirectory(src/ui)
+# Add subdirectories
+add_subdirectory(src/cpu)
 
-# Créer l'exécutable pour l'application
+# Create the executable for the application
 add_executable(GColorEmulator src/main.cpp)
 
-# Lier les bibliothèques internes (comme l'émulateur et l'UI)
-# target_link_libraries(GColorEmulator emulator ui)
+# Link internal libraries (like CPU)
+target_link_libraries(GColorEmulator PRIVATE cpu)
 
-# Lier SDL2 si nécessaire
-# target_link_libraries(GColorEmulator ${SDL2_LIBRARIES})
-
-target_compile_options(GColorEmulator PRIVATE -Wall -Wextra)
+# Set compile options for different configurations (Debug and Release)
+target_compile_options(GColorEmulator PRIVATE
+        $<$<CONFIG:Debug>:-Wall -Wextra -Wpedantic -Wno-gnu-anonymous-struct -Wno-nested-anon-types>
+        $<$<CONFIG:Release>:-O3>
+)
