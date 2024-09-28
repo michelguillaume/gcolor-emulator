@@ -21,19 +21,38 @@ project(GColorEmulator VERSION 1.0 LANGUAGES CXX)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG ${CMAKE_SOURCE_DIR}/bin/Debug)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_SOURCE_DIR}/bin/Release)
 
-
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Add subdirectories
 add_subdirectory(app)
-# add_subdirectory(tests)
 
-# Set compilation options
+# Add Google Test
+include(FetchContent)
 
-# Find SDL2 (if needed)
-# find_package(SDL2 REQUIRED)
-# include_directories(${SDL2_INCLUDE_DIRS})
+FetchContent_Declare(
+        googletest
+        URL https://github.com/google/googletest/archive/refs/tags/v1.15.2.zip
+)
 
-# Link SDL2 to the target (if needed)
-# target_link_libraries(GColorEmulator ${SDL2_LIBRARIES})
+FetchContent_MakeAvailable(googletest)
+
+# Enable testing framework
+enable_testing()
+
+# Add test executable
+add_executable(runTests
+        tests/test_add.cpp
+        tests/test_adc.cpp
+        tests/test_sub.cpp
+        tests/test_sbc.cpp
+)
+
+# Link GoogleTest and your CPU library to the test executable
+target_link_libraries(runTests gtest gtest_main cpu)
+
+# Add a test to be run with CTest
+add_test(NAME runTests COMMAND runTests)
+
+# Optional: Show test summary after running tests
+set(CMAKE_CTEST_ARGUMENTS "--output-on-failure")
