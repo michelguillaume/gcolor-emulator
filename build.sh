@@ -41,7 +41,7 @@ if [ -z "$NUM_THREADS" ]; then
     make -j || exit 1
 else
     echo "Building the project with ${NUM_THREADS} threads..."
-    make -j${NUM_THREADS} || exit 1
+    make -j"${NUM_THREADS}" || exit 1
 fi
 
 # Run tests using ctest
