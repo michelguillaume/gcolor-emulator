@@ -1,19 +1,22 @@
 #!/bin/bash
 
-# This script configures and builds the project using CMake
+# This script configures, builds, runs tests for the project using CMake
 
 # Default build type (Debug by default)
 BUILD_TYPE="Debug"
+NUM_THREADS=""  # Default to empty, uses all available cores when running `make -j`
 
-# Parse command-line arguments for build type (Release if specified)
-while getopts "r" opt; do
+# Parse command-line arguments for build type, threads, and coverage (-r for Release, -j for specific thread count)
+while getopts "rj:" opt; do
   case ${opt} in
     r )
       BUILD_TYPE="Release"
       ;;
+    j )
+      NUM_THREADS=$OPTARG
+      ;;
     \? )
-      echo "Usage: $0 [-r]"
-      echo "  -r    Use Release build type (default is Debug)"
+      echo "Usage: $0 [-r] [-j <num_threads>]"
       exit 1
       ;;
   esac
@@ -25,25 +28,25 @@ if [ ! -d "build" ]; then
     mkdir build
 fi
 
-# Navigate to the build directory, exit if cd fails
-if ! cd build; then
-    echo "Failed to change directory to 'build'. Exiting..."
-    exit 1
-fi
+# Navigate to the build directory
+cd build || exit
 
 # Run CMake to generate build files
 echo "Configuring the project with CMake (Build type: ${BUILD_TYPE})..."
-if ! cmake -DCMAKE_BUILD_TYPE=${BUILD_TYPE} ..; then
-    echo "CMake configuration failed. Please check the errors above."
-    exit 1
+cmake -DCMAKE_BUILD_TYPE=${BUILD_TYPE} .. || exit 1
+
+# Build the project with make (using all cores by default, or a specified number of threads)
+if [ -z "$NUM_THREADS" ]; then
+    echo "Building the project with all available cores..."
+    make -j || exit 1
+else
+    echo "Building the project with ${NUM_THREADS} threads..."
+    make -j${NUM_THREADS} || exit 1
 fi
 
-# Run the build process (use make for Unix-like systems)
-echo "Building the project..."
-if ! make; then
-    echo "Build failed. Please check the errors above."
-    exit 1
-fi
+# Run tests using ctest
+echo "Running tests..."
+ctest -V --output-on-failure || exit 1
 
 # If everything succeeded
-echo "Build completed successfully!"
+echo "Build, tests, completed successfully!"
