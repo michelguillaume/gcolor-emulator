@@ -20,11 +20,16 @@ jobs:
     runs-on: [self-hosted, Linux, X64]
 
     container:
-      image: docker://ubuntu:24.04
+      image: guillaumemichel1026/gcolor-emulator:latest
       options: --privileged
 
     steps:
     - uses: actions/checkout@v4
+
+    - name: Setup cmake
+      uses: jwlawson/actions-setup-cmake@v2
+      with:
+        cmake-version: '3.29'
 
     # Install all necessary dependencies for a C++ project
     - name: Install dependencies
