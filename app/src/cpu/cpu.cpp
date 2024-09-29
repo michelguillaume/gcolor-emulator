@@ -99,7 +99,7 @@ namespace emulator
 
     }
 
-    inline void CPU::add(const uint8_t& reg) {
+    void CPU::add(const uint8_t& reg) {
         const uint16_t result = A + reg;
 
         //newFlags |= ((A ^ reg ^ result) & 0x10) ? HALF_CARRY_FLAG_MASK : 0;
@@ -113,7 +113,7 @@ namespace emulator
     }
 
 
-    inline void CPU::ADD_A_A() {
+    void CPU::ADD_A_A() {
         const uint16_t result = A + A;
 
         uint8_t newFlags = ((A & 0xF) > 0x07) ? HALF_CARRY_FLAG_MASK : 0;
@@ -127,7 +127,7 @@ namespace emulator
 
 
 
-    inline void CPU::adc(const uint8_t& reg) {
+    void CPU::adc(const uint8_t& reg) {
         const uint8_t carry = getCarryFlag();
         const uint16_t result = A + reg + carry;
 
@@ -141,7 +141,7 @@ namespace emulator
     }
 
 
-    inline void CPU::ADC_A_A() {
+    void CPU::ADC_A_A() {
         const uint8_t carry = getCarryFlag();
         const uint16_t result = A + A + carry;
 
@@ -154,7 +154,7 @@ namespace emulator
             ((result & 0x100) ? CARRY_FLAG_MASK : 0);
     }
 
-    inline void CPU::sub(const uint8_t& reg) {
+    void CPU::sub(const uint8_t& reg) {
         const uint16_t result = A - reg;
         uint8_t newFlags = SUBTRACT_FLAG_MASK |
             (((A & 0xF) < (reg & 0xF)) ? HALF_CARRY_FLAG_MASK : 0) |
@@ -166,12 +166,12 @@ namespace emulator
             ((A == 0) ? ZERO_FLAG_MASK : 0);
     }
 
-    inline void CPU::SUB_A_A() {
+    void CPU::SUB_A_A() {
         A = 0;
         F = SUBTRACT_FLAG_MASK | ZERO_FLAG_MASK;
     }
 
-    inline void CPU::sbc(const uint8_t& reg) {
+     void CPU::sbc(const uint8_t& reg) {
         const uint8_t carry = getCarryFlag();
         const uint16_t result = A - reg - carry;
 
@@ -184,7 +184,7 @@ namespace emulator
         F = newFlags | ((A == 0) ? ZERO_FLAG_MASK : 0);
     }
 
-    inline void CPU::SBC_A_A() {
+    void CPU::SBC_A_A() {
         const uint8_t carry = getCarryFlag();
 
         A = carry ? 0xFF : 0x00;

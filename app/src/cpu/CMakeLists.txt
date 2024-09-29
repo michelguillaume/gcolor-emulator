@@ -12,6 +12,7 @@
 
 add_library(cpu STATIC
         cpu.cpp
+        cpu.hpp
 )
 
 target_include_directories(cpu PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

@@ -17,6 +17,8 @@
 cmake_minimum_required(VERSION 3.29)
 project(GColorEmulator VERSION 1.0 LANGUAGES CXX)
 
+set(CMAKE_VERBOSE_MAKEFILE ON)
+
 # Set the directory for executables
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG ${CMAKE_SOURCE_DIR}/bin/Debug)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_SOURCE_DIR}/bin/Release)
@@ -53,6 +55,3 @@ target_link_libraries(runTests gtest gtest_main cpu)
 
 # Add a test to be run with CTest
 add_test(NAME runTests COMMAND runTests)
-
-# Optional: Show test summary after running tests
-set(CMAKE_CTEST_ARGUMENTS "--output-on-failure")
