@@ -17,8 +17,6 @@
 cmake_minimum_required(VERSION 3.29)
 project(GColorEmulator VERSION 1.0 LANGUAGES CXX)
 
-set(CMAKE_VERBOSE_MAKEFILE ON)
-
 # Set the directory for executables
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG ${CMAKE_SOURCE_DIR}/bin/Debug)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_SOURCE_DIR}/bin/Release)
