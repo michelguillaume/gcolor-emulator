@@ -22,6 +22,7 @@
 
 #include <cstdint>
 #include <iostream>
+#include <array>
 
 constexpr uint8_t ZERO_FLAG_MASK = 0x80;  // Bit 7
 constexpr uint8_t SUBTRACT_FLAG_MASK = 0x40;  // Bit 6
@@ -116,45 +117,9 @@ namespace emulator
     private:
         typedef void (CPU::*Instruction)();
 
-        Instruction instruction_table[256] = {
-            [0x80] = &CPU::ADD_A_B,   // ADD A, B
-            [0x81] = &CPU::ADD_A_C,   // ADD A, C
-            [0x82] = &CPU::ADD_A_D,   // ADD A, D
-            [0x83] = &CPU::ADD_A_E,   // ADD A, E
-            [0x84] = &CPU::ADD_A_H,   // ADD A, H
-            [0x85] = &CPU::ADD_A_L,   // ADD A, L
-            [0x86] = &CPU::ADD_A_HL,  // ADD A, (HL)
-            [0x87] = &CPU::ADD_A_A,   // ADD A, A
+        std::array<Instruction, 256> instruction_table;
 
-            [0x88] = &CPU::ADC_A_B,   // ADC A, B
-            [0x89] = &CPU::ADC_A_C,   // ADC A, C
-            [0x8A] = &CPU::ADC_A_D,   // ADC A, D
-            [0x8B] = &CPU::ADC_A_E,   // ADC A, E
-            [0x8C] = &CPU::ADC_A_H,   // ADC A, H
-            [0x8D] = &CPU::ADC_A_L,   // ADC A, L
-            [0x8E] = &CPU::ADC_A_HL,  // ADC A, (HL)
-            [0x8F] = &CPU::ADC_A_A,   // ADC A, A
-
-            [0x90] = &CPU::SUB_A_B,   // SUB A, B
-            [0x91] = &CPU::SUB_A_C,   // SUB A, C
-            [0x92] = &CPU::SUB_A_D,   // SUB A, D
-            [0x93] = &CPU::SUB_A_E,   // SUB A, E
-            [0x94] = &CPU::SUB_A_H,   // SUB A, H
-            [0x95] = &CPU::SUB_A_L,   // SUB A, L
-            [0x96] = &CPU::SUB_A_HL,  // SUB A, (HL)
-            [0x97] = &CPU::SUB_A_A,   // SUB A, A
-
-            [0x98] = &CPU::SBC_A_B,   // SBC A, B
-            [0x99] = &CPU::SBC_A_C,   // SBC A, C
-            [0x9A] = &CPU::SBC_A_D,   // SBC A, D
-            [0x9B] = &CPU::SBC_A_E,   // SBC A, E
-            [0x9C] = &CPU::SBC_A_H,   // SBC A, H
-            [0x9D] = &CPU::SBC_A_L,   // SBC A, L
-            [0x9E] = &CPU::SBC_A_HL,  // SBC A, (HL)
-            [0x9F] = &CPU::SBC_A_A,   // SBC A, A
-
-            [0xC6] = &CPU::ADD_A_n,   // ADD A, d8
-        };
+        static constexpr std::array<Instruction, 256> initialize_instruction_table();
 
         // Registers
         union {

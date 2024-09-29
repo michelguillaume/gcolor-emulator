@@ -19,11 +19,56 @@
 namespace emulator
 {
     CPU::CPU():
-    AF(), BC(), DE(), HL(),
-    PC(0x0100),     // Program starts at 0x0100 in most GB ROMs
-    SP(0xFFFE)      // Stack Pointer initialization
+    instruction_table(initialize_instruction_table()), AF(), BC(), DE(),
+    HL(),     // Program starts at 0x0100 in most GB ROMs
+    PC(0x0100),      // Stack Pointer initialization
+    SP(0xFFFE)
     {
 
+    }
+
+    constexpr std::array<CPU::Instruction, 256> CPU::initialize_instruction_table() {
+        std::array<Instruction, 256> table = {};
+
+        table[0x80] = &CPU::ADD_A_B;
+        table[0x81] = &CPU::ADD_A_C;
+        table[0x82] = &CPU::ADD_A_D;
+        table[0x83] = &CPU::ADD_A_E;
+        table[0x84] = &CPU::ADD_A_H;
+        table[0x85] = &CPU::ADD_A_L;
+        table[0x86] = &CPU::ADD_A_HL;
+        table[0x87] = &CPU::ADD_A_A;
+
+        table[0x88] = &CPU::ADC_A_B;
+        table[0x89] = &CPU::ADC_A_C;
+        table[0x8A] = &CPU::ADC_A_D;
+        table[0x8B] = &CPU::ADC_A_E;
+        table[0x8C] = &CPU::ADC_A_H;
+        table[0x8D] = &CPU::ADC_A_L;
+        table[0x8E] = &CPU::ADC_A_HL;
+        table[0x8F] = &CPU::ADC_A_A;
+
+        table[0x90] = &CPU::SUB_A_B;
+        table[0x91] = &CPU::SUB_A_C;
+        table[0x92] = &CPU::SUB_A_D;
+        table[0x93] = &CPU::SUB_A_E;
+        table[0x94] = &CPU::SUB_A_H;
+        table[0x95] = &CPU::SUB_A_L;
+        table[0x96] = &CPU::SUB_A_HL;
+        table[0x97] = &CPU::SUB_A_A;
+
+        table[0x98] = &CPU::SBC_A_B;
+        table[0x99] = &CPU::SBC_A_C;
+        table[0x9A] = &CPU::SBC_A_D;
+        table[0x9B] = &CPU::SBC_A_E;
+        table[0x9C] = &CPU::SBC_A_H;
+        table[0x9D] = &CPU::SBC_A_L;
+        table[0x9E] = &CPU::SBC_A_HL;
+        table[0x9F] = &CPU::SBC_A_A;
+
+        table[0xC6] = &CPU::ADD_A_n;
+
+        return table;
     }
 
     void CPU::reset() {
