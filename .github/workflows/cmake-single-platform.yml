@@ -19,6 +19,10 @@ jobs:
     # See: https://docs.github.com/en/free-pro-team@latest/actions/learn-github-actions/managing-complex-workflows#using-a-build-matrix
     runs-on: [self-hosted, Linux, X64]
 
+    container:
+      image: docker://ubuntu:22.04
+      options: --privileged
+
     steps:
     - uses: actions/checkout@v4
 
