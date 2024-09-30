@@ -234,5 +234,5 @@ TEST_F(CPUSubTest, SUB_A_B_SignedOverflowBehavior) {
     EXPECT_EQ(cpu.getA(), 0x7F);                  // A should be 127
     EXPECT_FALSE(cpu.getCarryFlag());             // Carry flag should NOT be set
     EXPECT_FALSE(cpu.getZeroFlag());              // Zero flag should NOT be set
-    EXPECT_FALSE(cpu.getHalfCarryFlag());          // Half-carry flag should be set
+    EXPECT_TRUE(cpu.getHalfCarryFlag());          // Half-carry flag should be set
 }
