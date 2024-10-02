@@ -46,6 +46,10 @@ add_executable(runTests
         tests/test_adc.cpp
         tests/test_sub.cpp
         tests/test_sbc.cpp
+        tests/test_and.cpp
+        tests/test_xor.cpp
+        tests/test_or.cpp
+        tests/test_cp.cpp
 )
 
 # Link GoogleTest and your CPU library to the test executable

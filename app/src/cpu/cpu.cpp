@@ -18,8 +18,7 @@
 
 namespace emulator
 {
-    CPU::CPU():
-    instruction_table(initialize_instruction_table()), AF(), BC(), DE(),
+    CPU::CPU(): AF(), BC(), DE(),
     HL(),     // Program starts at 0x0100 in most GB ROMs
     PC(0x0100),      // Stack Pointer initialization
     SP(0xFFFE)
@@ -27,49 +26,221 @@ namespace emulator
 
     }
 
-    constexpr std::array<CPU::Instruction, 256> CPU::initialize_instruction_table() {
-        std::array<Instruction, 256> table = {};
+    std::array<void (*)(CPU*), 256> CPU::instruction_table = {
+        [](CPU *cpu) {},                            // 0x00
+        [](CPU *cpu) {},                            // 0x01
+        [](CPU *cpu) {},                            // 0x02
+        [](CPU *cpu) {},                            // 0x03
+        [](CPU *cpu) {},                            // 0x04
+        [](CPU *cpu) {},                            // 0x05
+        [](CPU *cpu) {},                            // 0x06
+        [](CPU *cpu) {},                            // 0x07
+        [](CPU *cpu) {},                            // 0x08
+        [](CPU *cpu) {},                            // 0x09
+        [](CPU *cpu) {},                            // 0x0A
+        [](CPU *cpu) {},                            // 0x0B
+        [](CPU *cpu) {},                            // 0x0C
+        [](CPU *cpu) {},                            // 0x0D
+        [](CPU *cpu) {},                            // 0x0E
+        [](CPU *cpu) {},                            // 0x0F
 
-        table[0x80] = &CPU::ADD_A_B;
-        table[0x81] = &CPU::ADD_A_C;
-        table[0x82] = &CPU::ADD_A_D;
-        table[0x83] = &CPU::ADD_A_E;
-        table[0x84] = &CPU::ADD_A_H;
-        table[0x85] = &CPU::ADD_A_L;
-        table[0x86] = &CPU::ADD_A_HL;
-        table[0x87] = &CPU::ADD_A_A;
+        [](CPU *cpu) {},                            // 0x00
+        [](CPU *cpu) {},                            // 0x11
+        [](CPU *cpu) {},                            // 0x12
+        [](CPU *cpu) {},                            // 0x13
+        [](CPU *cpu) {},                            // 0x14
+        [](CPU *cpu) {},                            // 0x15
+        [](CPU *cpu) {},                            // 0x16
+        [](CPU *cpu) {},                            // 0x17
+        [](CPU *cpu) {},                            // 0x18
+        [](CPU *cpu) {},                            // 0x19
+        [](CPU *cpu) {},                            // 0x1A
+        [](CPU *cpu) {},                            // 0x1B
+        [](CPU *cpu) {},                            // 0x1C
+        [](CPU *cpu) {},                            // 0x1D
+        [](CPU *cpu) {},                            // 0x1E
+        [](CPU *cpu) {},                            // 0x1F
 
-        table[0x88] = &CPU::ADC_A_B;
-        table[0x89] = &CPU::ADC_A_C;
-        table[0x8A] = &CPU::ADC_A_D;
-        table[0x8B] = &CPU::ADC_A_E;
-        table[0x8C] = &CPU::ADC_A_H;
-        table[0x8D] = &CPU::ADC_A_L;
-        table[0x8E] = &CPU::ADC_A_HL;
-        table[0x8F] = &CPU::ADC_A_A;
+        [](CPU *cpu) {},                            // 0x20
+        [](CPU *cpu) {},                            // 0x21
+        [](CPU *cpu) {},                            // 0x22
+        [](CPU *cpu) {},                            // 0x23
+        [](CPU *cpu) {},                            // 0x24
+        [](CPU *cpu) {},                            // 0x25
+        [](CPU *cpu) {},                            // 0x26
+        [](CPU *cpu) {},                            // 0x27
+        [](CPU *cpu) {},                            // 0x28
+        [](CPU *cpu) {},                            // 0x29
+        [](CPU *cpu) {},                            // 0x2A
+        [](CPU *cpu) {},                            // 0x2B
+        [](CPU *cpu) {},                            // 0x2C
+        [](CPU *cpu) {},                            // 0x2D
+        [](CPU *cpu) {},                            // 0x2E
+        [](CPU *cpu) {},                            // 0x2F
 
-        table[0x90] = &CPU::SUB_A_B;
-        table[0x91] = &CPU::SUB_A_C;
-        table[0x92] = &CPU::SUB_A_D;
-        table[0x93] = &CPU::SUB_A_E;
-        table[0x94] = &CPU::SUB_A_H;
-        table[0x95] = &CPU::SUB_A_L;
-        table[0x96] = &CPU::SUB_A_HL;
-        table[0x97] = &CPU::SUB_A_A;
+        [](CPU *cpu) {},                            // 0x30
+        [](CPU *cpu) {},                            // 0x31
+        [](CPU *cpu) {},                            // 0x32
+        [](CPU *cpu) {},                            // 0x33
+        [](CPU *cpu) {},                            // 0x34
+        [](CPU *cpu) {},                            // 0x35
+        [](CPU *cpu) {},                            // 0x36
+        [](CPU *cpu) {},                            // 0x37
+        [](CPU *cpu) {},                            // 0x38
+        [](CPU *cpu) {},                            // 0x39
+        [](CPU *cpu) {},                            // 0x3A
+        [](CPU *cpu) {},                            // 0x3B
+        [](CPU *cpu) {},                            // 0x3C
+        [](CPU *cpu) {},                            // 0x3D
+        [](CPU *cpu) {},                            // 0x3E
+        [](CPU *cpu) {},                            // 0x3F
+#warning ld B in B look for optimisation
+        [](CPU *cpu) { cpu->ld(cpu->B, cpu->B); },  // 0x40 LD B,B
+        [](CPU *cpu) { cpu->ld(cpu->B, cpu->C); },  // 0x41 LD B,C
+        [](CPU *cpu) { cpu->ld(cpu->B, cpu->D); },  // 0x42 LD B,D
+        [](CPU *cpu) { cpu->ld(cpu->B, cpu->E); },  // 0x43 LD B,E
+        [](CPU *cpu) { cpu->ld(cpu->B, cpu->H); },  // 0x44 LD B,H
+        [](CPU *cpu) { cpu->ld(cpu->B, cpu->L); },  // 0x45 LD B,L
+        [](CPU *cpu) { cpu->ldFromHL(cpu->B); },            // 0x46 LD B,(HL)
+        [](CPU *cpu) { cpu->ld(cpu->B, cpu->A); },  // 0x47 LD B,A
 
-        table[0x98] = &CPU::SBC_A_B;
-        table[0x99] = &CPU::SBC_A_C;
-        table[0x9A] = &CPU::SBC_A_D;
-        table[0x9B] = &CPU::SBC_A_E;
-        table[0x9C] = &CPU::SBC_A_H;
-        table[0x9D] = &CPU::SBC_A_L;
-        table[0x9E] = &CPU::SBC_A_HL;
-        table[0x9F] = &CPU::SBC_A_A;
+        [](CPU *cpu) { cpu->ld(cpu->C, cpu->B); },  // 0x48 LD C,B
+        [](CPU *cpu) { cpu->ld(cpu->C, cpu->C); },  // 0x49 LD C,C
+        [](CPU *cpu) { cpu->ld(cpu->C, cpu->D); },  // 0x4A LD C,D
+        [](CPU *cpu) { cpu->ld(cpu->C, cpu->E); },  // 0x4B LD C,E
+        [](CPU *cpu) { cpu->ld(cpu->C, cpu->H); },  // 0x4C LD C,H
+        [](CPU *cpu) { cpu->ld(cpu->C, cpu->L); },  // 0x4D LD C,L
+        [](CPU *cpu) { cpu->ldFromHL(cpu->C); },            // 0x4E LD C,(HL)
+        [](CPU *cpu) { cpu->ld(cpu->C, cpu->A); },  // 0x4F LD C,A
 
-        table[0xC6] = &CPU::ADD_A_n;
+        [](CPU *cpu) { cpu->ld(cpu->D, cpu->B); },  // 0x50 LD D,B
+        [](CPU *cpu) { cpu->ld(cpu->D, cpu->C); },  // 0x51 LD D,C
+        [](CPU *cpu) { cpu->ld(cpu->D, cpu->D); },  // 0x52 LD D,D
+        [](CPU *cpu) { cpu->ld(cpu->D, cpu->E); },  // 0x53 LD D,E
+        [](CPU *cpu) { cpu->ld(cpu->D, cpu->H); },  // 0x54 LD D,H
+        [](CPU *cpu) { cpu->ld(cpu->D, cpu->L); },  // 0x55 LD D,L
+        [](CPU *cpu) { cpu->ldFromHL(cpu->D); },                 // 0x56 LD D,(HL)
+        [](CPU *cpu) { cpu->ld(cpu->D, cpu->A); },  // 0x57 LD D,A
 
-        return table;
-    }
+        [](CPU *cpu) { cpu->ld(cpu->E, cpu->B); },  // 0x58 LD E,B
+        [](CPU *cpu) { cpu->ld(cpu->E, cpu->C); },  // 0x59 LD E,C
+        [](CPU *cpu) { cpu->ld(cpu->E, cpu->D); },  // 0x5A LD E,D
+        [](CPU *cpu) { cpu->ld(cpu->E, cpu->E); },  // 0x5B LD E,E
+        [](CPU *cpu) { cpu->ld(cpu->E, cpu->H); },  // 0x5C LD E,H
+        [](CPU *cpu) { cpu->ld(cpu->E, cpu->L); },  // 0x5D LD E,L
+        [](CPU *cpu) { cpu->ldFromHL(cpu->E); },            // 0x5E LD E,(HL)
+        [](CPU *cpu) { cpu->ld(cpu->E, cpu->A); },  // 0x5F LD E,A
+
+        [](CPU *cpu) { cpu->ld(cpu->H, cpu->B); },  // 0x60 LD H,B
+        [](CPU *cpu) { cpu->ld(cpu->H, cpu->C); },  // 0x61 LD H,C
+        [](CPU *cpu) { cpu->ld(cpu->H, cpu->D); },  // 0x62 LD H,D
+        [](CPU *cpu) { cpu->ld(cpu->H, cpu->E); },  // 0x63 LD H,E
+        [](CPU *cpu) { cpu->ld(cpu->H, cpu->H); },  // 0x64 LD H,H
+        [](CPU *cpu) { cpu->ld(cpu->H, cpu->L); },  // 0x65 LD H,L
+        [](CPU *cpu) { cpu->ldFromHL(cpu->H); },            // 0x66 LD H,(HL)
+        [](CPU *cpu) { cpu->ld(cpu->H, cpu->A); },  // 0x67 LD H,A
+
+        [](CPU *cpu) { cpu->ld(cpu->L, cpu->B); },  // 0x68 LD L,B
+        [](CPU *cpu) { cpu->ld(cpu->L, cpu->C); },  // 0x69 LD L,C
+        [](CPU *cpu) { cpu->ld(cpu->L, cpu->D); },  // 0x6A LD L,D
+        [](CPU *cpu) { cpu->ld(cpu->L, cpu->E); },  // 0x6B LD L,E
+        [](CPU *cpu) { cpu->ld(cpu->L, cpu->H); },  // 0x6C LD L,H
+        [](CPU *cpu) { cpu->ld(cpu->L, cpu->L); },  // 0x6D LD L,L
+        [](CPU *cpu) { cpu->ldFromHL(cpu->L); },            // 0x6E LD L,(HL)
+        [](CPU *cpu) { cpu->ld(cpu->L, cpu->A); },  // 0x6F LD L,A
+
+        [](CPU *cpu) { cpu->ldToHL(cpu->B); },                // 0x70 LD (HL),B
+        [](CPU *cpu) { cpu->ldToHL(cpu->C); },                // 0x71 LD (HL),C
+        [](CPU *cpu) { cpu->ldToHL(cpu->D); },                // 0x72 LD (HL),D
+        [](CPU *cpu) { cpu->ldToHL(cpu->E); },                // 0x73 LD (HL),E
+        [](CPU *cpu) { cpu->ldToHL(cpu->H); },                // 0x74 LD (HL),H
+        [](CPU *cpu) { cpu->ldToHL(cpu->L); },                // 0x75 LD (HL),L
+
+        [](CPU *cpu) {},                            // 0x76 HALT
+
+        [](CPU *cpu) { cpu->ldToHL(cpu->A); },                 // 0x77 LD (HL),A
+
+        [](CPU *cpu) { cpu->ld(cpu->A, cpu->B); },  // 0x78 LD A,B
+        [](CPU *cpu) { cpu->ld(cpu->A, cpu->C); },  // 0x79 LD A,C
+        [](CPU *cpu) { cpu->ld(cpu->A, cpu->D); },  // 0x7A LD A,D
+        [](CPU *cpu) { cpu->ld(cpu->A, cpu->E); },  // 0x7B LD A,E
+        [](CPU *cpu) { cpu->ld(cpu->A, cpu->H); },  // 0x7C LD A,H
+        [](CPU *cpu) { cpu->ld(cpu->A, cpu->L); },  // 0x7D LD A,L
+        [](CPU *cpu) { cpu->ldFromHL(cpu->A); },  // 0x7E LD A,(HL)
+        [](CPU *cpu) { cpu->ld(cpu->A, cpu->A); },  // 0x7F LD A,A
+
+        [](CPU *cpu) { cpu->add(cpu->B); },     // 0x80
+        [](CPU *cpu) { cpu->add(cpu->C); },     // 0x81
+        [](CPU *cpu) { cpu->add(cpu->D); },     // 0x82
+        [](CPU *cpu) { cpu->add(cpu->E); },     // 0x83
+        [](CPU *cpu) { cpu->add(cpu->H); },     // 0x84
+        [](CPU *cpu) { cpu->add(cpu->L); },     // 0x85
+        [](CPU *cpu) { /* uint8_t valueAtHL = readMemory(HL); add(valueAtHL); */ },     // 0x86
+        [](CPU *cpu) { cpu->add_a_a(); },       // 0x87
+
+        [](CPU *cpu) { cpu->adc(cpu->B); },     // 0x88
+        [](CPU *cpu) { cpu->adc(cpu->C); },     // 0x89
+        [](CPU *cpu) { cpu->adc(cpu->D); },     // 0x8A
+        [](CPU *cpu) { cpu->adc(cpu->E); },     // 0x8B
+        [](CPU *cpu) { cpu->adc(cpu->H); },     // 0x8C
+        [](CPU *cpu) { cpu->adc(cpu->L); },     // 0x8D
+        [](CPU *cpu) { /* uint8_t valueAtHL = readMemory(HL); adc(valueAtHL); */ },     // 0x8E
+        [](CPU *cpu) { cpu->adc_a_a(); },       // 0x8F
+
+        [](CPU *cpu) { cpu->sub(cpu->B); },     // 0x90
+        [](CPU *cpu) { cpu->sub(cpu->C); },     // 0x91
+        [](CPU *cpu) { cpu->sub(cpu->D); },     // 0x92
+        [](CPU *cpu) { cpu->sub(cpu->E); },     // 0x93
+        [](CPU *cpu) { cpu->sub(cpu->H); },     // 0x94
+        [](CPU *cpu) { cpu->sub(cpu->L); },     // 0x95
+        [](CPU *cpu) { /* uint8_t valueAtHL = readMemory(HL); adc(valueAtHL); */ },     // 0x96
+        [](CPU *cpu) { cpu->sub_a_a(); },       // 0x97
+
+        [](CPU *cpu) { cpu->sbc(cpu->B); },     // 0x98
+        [](CPU *cpu) { cpu->sbc(cpu->C); },     // 0x99
+        [](CPU *cpu) { cpu->sbc(cpu->D); },     // 0x9A
+        [](CPU *cpu) { cpu->sbc(cpu->E); },     // 0x9B
+        [](CPU *cpu) { cpu->sbc(cpu->H); },     // 0x9C
+        [](CPU *cpu) { cpu->sbc(cpu->L); },     // 0x9D
+        [](CPU *cpu) { },                       // 0x9E
+        [](CPU *cpu) { cpu->sbc_a_a(); },       // 0x9F
+
+        [](CPU *cpu) { cpu->and_op(cpu->B); },       // 0xA0
+        [](CPU *cpu) { cpu->and_op(cpu->C); },       // 0xA1
+        [](CPU *cpu) { cpu->and_op(cpu->D); },       // 0xA2
+        [](CPU *cpu) { cpu->and_op(cpu->E); },       // 0xA3
+        [](CPU *cpu) { cpu->and_op(cpu->H); },       // 0xA4
+        [](CPU *cpu) { cpu->and_op(cpu->L); },       // 0xA5
+        [](CPU *cpu) { },       // 0xA6
+        [](CPU *cpu) { cpu->and_a_a(); },            // 0xA7
+
+        [](CPU *cpu) { cpu->xor_op(cpu->B); },       // 0xA8
+        [](CPU *cpu) { cpu->xor_op(cpu->C); },       // 0xA9
+        [](CPU *cpu) { cpu->xor_op(cpu->D); },       // 0xAA
+        [](CPU *cpu) { cpu->xor_op(cpu->E); },       // 0xAB
+        [](CPU *cpu) { cpu->xor_op(cpu->H); },       // 0xAC
+        [](CPU *cpu) { cpu->xor_op(cpu->L); },       // 0xAD
+        [](CPU *cpu) {  },                           // 0xAE
+        [](CPU *cpu) { cpu->xor_a_a(); },            // 0xAF
+
+        [](CPU *cpu) { cpu->or_op(cpu->B); },        // 0xB0
+        [](CPU *cpu) { cpu->or_op(cpu->C); },        // 0xB1
+        [](CPU *cpu) { cpu->or_op(cpu->D); },        // 0xB2
+        [](CPU *cpu) { cpu->or_op(cpu->E); },        // 0xB3
+        [](CPU *cpu) { cpu->or_op(cpu->H); },        // 0xB4
+        [](CPU *cpu) { cpu->or_op(cpu->L); },        // 0xB5
+        [](CPU *cpu) {  },                           // 0xB6
+        [](CPU *cpu) { cpu->or_a_a(); },             // 0xB7
+
+        [](CPU *cpu) { cpu->cp(cpu->B); },           // 0xB8
+        [](CPU *cpu) { cpu->cp(cpu->C); },           // 0xB9
+        [](CPU *cpu) { cpu->cp(cpu->D); },           // 0xBA
+        [](CPU *cpu) { cpu->cp(cpu->E); },           // 0xBB
+        [](CPU *cpu) { cpu->cp(cpu->H); },           // 0xBC
+        [](CPU *cpu) { cpu->cp(cpu->L); },           // 0xBD
+        [](CPU *cpu) {  },                           // 0xBE
+        [](CPU *cpu) { cpu->cp_a_a(); },             // 0xBF
+    };
 
     void CPU::reset() {
         AF = 0x01B0;    // A = 0x01, F = 0xB0 (initial flags for Gameboy)
@@ -86,12 +257,11 @@ namespace emulator
         F = 0xB0;  // Assuming this is the default flag register state (e.g., zero flag set)
     }
 
-
     void CPU::executeInstruction()
     {
-        fetch();
-        decode();
-        execute();
+        //fetch();
+        //decode();
+        //execute();
     }
 
     void CPU::decode()
@@ -99,7 +269,24 @@ namespace emulator
 
     }
 
-    void CPU::add(const uint8_t& reg) {
+    void CPU::ld(uint8_t& dest, const uint8_t src)
+    {
+        dest = src;
+    }
+
+    void CPU::ldFromHL(uint8_t &dest)
+    {
+        uint8_t valueAtHL = readMemory(HL);
+
+        dest = valueAtHL;
+    }
+
+    void CPU::ldToHL(const uint8_t src)
+    {
+        writeMemory(HL, src);
+    }
+
+    void CPU::add(const uint8_t reg) {
         const uint16_t result = A + reg;
 
         //newFlags |= ((A ^ reg ^ result) & 0x10) ? HALF_CARRY_FLAG_MASK : 0;
@@ -112,8 +299,7 @@ namespace emulator
             ((result & 0x100) ? CARRY_FLAG_MASK : 0);
     }
 
-
-    void CPU::ADD_A_A() {
+    void CPU::add_a_a() {
         const uint16_t result = A + A;
 
         uint8_t newFlags = ((A & 0xF) > 0x07) ? HALF_CARRY_FLAG_MASK : 0;
@@ -125,9 +311,7 @@ namespace emulator
             ((result & 0x100) ? CARRY_FLAG_MASK : 0);
     }
 
-
-
-    void CPU::adc(const uint8_t& reg) {
+    void CPU::adc(const uint8_t reg) {
         const uint8_t carry = getCarryFlag();
         const uint16_t result = A + reg + carry;
 
@@ -140,8 +324,7 @@ namespace emulator
             ((result & 0x100) ? CARRY_FLAG_MASK : 0);
     }
 
-
-    void CPU::ADC_A_A() {
+    void CPU::adc_a_a() {
         const uint8_t carry = getCarryFlag();
         const uint16_t result = A + A + carry;
 
@@ -154,7 +337,7 @@ namespace emulator
             ((result & 0x100) ? CARRY_FLAG_MASK : 0);
     }
 
-    void CPU::sub(const uint8_t& reg) {
+    void CPU::sub(const uint8_t reg) {
         const uint16_t result = A - reg;
         uint8_t newFlags = SUBTRACT_FLAG_MASK |
             (((A & 0xF) < (reg & 0xF)) ? HALF_CARRY_FLAG_MASK : 0) |
@@ -166,12 +349,12 @@ namespace emulator
             ((A == 0) ? ZERO_FLAG_MASK : 0);
     }
 
-    void CPU::SUB_A_A() {
+    void CPU::sub_a_a() {
         A = 0;
         F = SUBTRACT_FLAG_MASK | ZERO_FLAG_MASK;
     }
 
-     void CPU::sbc(const uint8_t& reg) {
+    void CPU::sbc(const uint8_t reg) {
         const uint8_t carry = getCarryFlag();
         const uint16_t result = A - reg - carry;
 
@@ -184,7 +367,7 @@ namespace emulator
         F = newFlags | ((A == 0) ? ZERO_FLAG_MASK : 0);
     }
 
-    void CPU::SBC_A_A() {
+    void CPU::sbc_a_a() {
         const uint8_t carry = getCarryFlag();
 
         A = carry ? 0xFF : 0x00;
@@ -194,5 +377,53 @@ namespace emulator
             ((A == 0) ? ZERO_FLAG_MASK : 0);
     }
 
+    void CPU::and_op(const uint8_t reg)
+    {
+        A &= reg;
 
+        F = HALF_CARRY_FLAG_MASK |
+            ((A == 0) ? ZERO_FLAG_MASK : 0);
+    }
+
+    void CPU::and_a_a()
+    {
+        F = HALF_CARRY_FLAG_MASK | ((A == 0) ? ZERO_FLAG_MASK : 0);
+    }
+
+    void CPU::xor_op(const uint8_t reg)
+    {
+        A ^= reg;
+        F = ((A == 0) ? ZERO_FLAG_MASK : 0);
+    }
+
+    void CPU::xor_a_a()
+    {
+        A = 0;
+        F = ZERO_FLAG_MASK;
+    }
+
+    void CPU::or_op(const uint8_t reg)
+    {
+        A |= reg;
+        F = ((A == 0) ? ZERO_FLAG_MASK : 0);
+    }
+
+    void CPU::or_a_a()
+    {
+        F = ((A == 0) ? ZERO_FLAG_MASK : 0);
+    }
+
+    void CPU::cp(const uint8_t reg)
+    {
+        // Implicit comparison of A with reg, without modifying A
+        F = SUBTRACT_FLAG_MASK |
+            (((A & 0xF) < (reg & 0xF)) ? HALF_CARRY_FLAG_MASK : 0) |
+            ((A < reg) ? CARRY_FLAG_MASK : 0) |
+            ((A == reg) ? ZERO_FLAG_MASK : 0);
+    }
+
+    void CPU::cp_a_a()
+    {
+        F = SUBTRACT_FLAG_MASK | ZERO_FLAG_MASK;
+    }
 }

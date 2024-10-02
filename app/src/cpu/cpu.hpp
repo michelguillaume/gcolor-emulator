@@ -40,57 +40,49 @@ namespace emulator
         // Method to execute a single instruction
         void executeInstruction();
 
+        void execute(uint8_t opcode)
+        {
+            instruction_table[opcode](this);
+        }; // Execute the decoded instruction
+
         // Method to reset the CPU (initial state)
         void reset();
 
-        void add(const uint8_t&);
+        static void ld(uint8_t&, uint8_t);
 
-        void ADD_A_B() { add(B); }
-        void ADD_A_C() { add(C); }
-        void ADD_A_D() { add(D); }
-        void ADD_A_E() { add(E); }
-        void ADD_A_H() { add(H); }
-        void ADD_A_L() { add(L); }
-        void ADD_A_HL() { /* uint8_t valueAtHL = readMemory(HL); add(valueAtHL); */ }
-        void ADD_A_A();
+        void ldFromHL(uint8_t&);
+
+        void ldToHL(uint8_t);
+
+        void add(uint8_t);
+        void add_a_a();
+
+        void adc(uint8_t);
+        void adc_a_a();
+
+        void sub(uint8_t);
+        void sub_a_a();
+
+        void sbc(uint8_t);
+        void sbc_a_a();
+
+        void and_op(uint8_t);
+        void and_a_a();
+
+        void xor_op(uint8_t);
+        void xor_a_a();
+
+        void or_op(uint8_t);
+        void or_a_a();
+
+        void cp(uint8_t);
+        void cp_a_a();
+
+
         void ADD_A_n() { /* uint8_t immediateValue = fetchNextByte(); add(immediateValue); */ }
-
-        void adc(const uint8_t&);
-
-        void ADC_A_B() {adc(B);}
-        void ADC_A_C() {adc(C);}
-        void ADC_A_D() {adc(D);}
-        void ADC_A_E() {adc(E);}
-        void ADC_A_H() {adc(H);}
-        void ADC_A_L() {adc(L);}
-        void ADC_A_HL() { /* uint8_t valueAtHL = readMemory(HL); adc(valueAtHL); */ }
-        void ADC_A_A();
         void ADC_A_n() { /* uint8_t immediateValue = fetchNextByte(); adc(immediateValue); */ }
-
-        void sub(const uint8_t&);
-
-        void SUB_A_B() {sub(B);}
-        void SUB_A_C() {sub(C);}
-        void SUB_A_D() {sub(D);}
-        void SUB_A_E() {sub(E);}
-        void SUB_A_H() {sub(H);}
-        void SUB_A_L() {sub(L);}
-        void SUB_A_HL() { /* uint8_t valueAtHL = readMemory(HL); adc(valueAtHL); */ }
-        void SUB_A_A();
         void SUB_A_n() { /* uint8_t immediateValue = fetchNextByte(); adc(immediateValue); */ }
-
-        void sbc(const uint8_t&);
-
-        void SBC_A_B() {sbc(B);}
-        void SBC_A_C() {sbc(C);}
-        void SBC_A_D() {sbc(D);}
-        void SBC_A_E() {sbc(E);}
-        void SBC_A_H() {sbc(H);}
-        void SBC_A_L() {sbc(L);}
-        void SBC_A_HL() { /* uint8_t valueAtHL = readMemory(HL); adc(valueAtHL); */ }
-        void SBC_A_A();
         void SBC_A_n() { /* uint8_t immediateValue = fetchNextByte(); adc(immediateValue); */ }
-
 
         [[nodiscard]] uint8_t getA() const { return A; }
         void setA(const uint8_t value) { A = value; }
@@ -103,7 +95,6 @@ namespace emulator
         [[nodiscard]] bool getHalfCarryFlag() const { return F & HALF_CARRY_FLAG_MASK; }
         [[nodiscard]] bool getCarryFlag() const { return F & CARRY_FLAG_MASK; }
 
-
         [[nodiscard]] uint8_t getFlags() const { return F; }
 
         void setZeroFlag(const bool value) { F = value ? (F | ZERO_FLAG_MASK) : (F & ~ZERO_FLAG_MASK); }
@@ -115,11 +106,7 @@ namespace emulator
         void clearCarryFlag() { F &= ~CARRY_FLAG_MASK; }
 
     private:
-        typedef void (CPU::*Instruction)();
-
-        std::array<Instruction, 256> instruction_table;
-
-        static constexpr std::array<Instruction, 256> initialize_instruction_table();
+        static std::array<void (*)(CPU*), 256> instruction_table;
 
         // Registers
         union {
@@ -160,10 +147,12 @@ namespace emulator
         // Methods to handle CPU instructions
         void fetch() {}; // Fetch the next instruction
         void decode(); // Decode the fetched instruction
-        void execute() {}; // Execute the decoded instruction
+
+        uint8_t readMemory(const uint8_t reg) { return 0; }
+        void writeMemory(uint16_t addr, uint8_t val) { /* memory[addr] = val; */}
 
         // Helper methods for instruction decoding
-        void handle_opcodes(uint8_t opcode);
+        // void handle_opcodes(uint8_t opcode);
     };
 }
 
