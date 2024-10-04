@@ -50,6 +50,8 @@ add_executable(runTests
         tests/test_xor.cpp
         tests/test_or.cpp
         tests/test_cp.cpp
+        tests/test_inc8.cpp
+        tests/test_dec8.cpp
 )
 
 # Link GoogleTest and your CPU library to the test executable

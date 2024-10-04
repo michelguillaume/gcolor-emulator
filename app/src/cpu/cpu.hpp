@@ -48,11 +48,19 @@ namespace emulator
         // Method to reset the CPU (initial state)
         void reset();
 
-        static void ld(uint8_t&, uint8_t);
+        void inc16(uint16_t&);
 
-        void ldFromHL(uint8_t&);
+        void inc8(uint8_t&);
 
-        void ldToHL(uint8_t);
+        void dec8(uint8_t&);
+
+        void dec16(uint16_t&);
+
+        void ld(uint8_t&, uint8_t);
+
+        void ldFromMem(uint8_t&, uint16_t);
+
+        void ldToMem(uint16_t, uint8_t);
 
         void add(uint8_t);
         void add_a_a();
@@ -104,6 +112,8 @@ namespace emulator
         // F = (F & ~CARRY_FLAG_MASK) | (value * CARRY_FLAG_MASK);
 
         void clearCarryFlag() { F &= ~CARRY_FLAG_MASK; }
+
+        void clearFlags() { F = 0; }
 
     private:
         static std::array<void (*)(CPU*), 256> instruction_table;
