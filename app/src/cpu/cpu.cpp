@@ -28,73 +28,76 @@ namespace emulator
 
     std::array<void (*)(CPU*), 256> CPU::instruction_table = {
         [](CPU *cpu) { /* Does nothing, just consumes one CPU cycle */ },  // 0x00 NOP
-        [](CPU *cpu) {},                            // 0x01 LD BC,d16
-        [](CPU *cpu) { cpu->ldToMem(cpu->BC, cpu->A); },                   // 0x02 LD (BC),A
-        [](CPU *cpu) { cpu->inc16(cpu->BC); },                          // 0x03 INC BC
-        [](CPU *cpu) { cpu->inc8(cpu->B); },                            // 0x04 INC B
-        [](CPU *cpu) { cpu->dec8(cpu->B); },                            // 0x05 DEC B
-        [](CPU *cpu) {  },                                                 // 0x06 LD B,d8
+        [](CPU *cpu) { cpu->ldReg16_d16(cpu->BC); },                    // 0x01 LD BC,d16
+        [](CPU *cpu) { cpu->ldMemReg16_A(cpu->BC); },                   // 0x02 LD (BC),A
+        [](CPU *cpu) { cpu->incReg16(cpu->BC); },                       // 0x03 INC BC
+        [](CPU *cpu) { cpu->incReg8(cpu->B); },                         // 0x04 INC B
+        [](CPU *cpu) { cpu->decReg8(cpu->B); },                         // 0x05 DEC B
+        [](CPU *cpu) { cpu->ldReg8_d8(cpu->D); },                       // 0x06 LD B,d8
         [](CPU *cpu) {},                            // 0x07 RLCA
 
-        [](CPU *cpu) {},                            // 0x08 LD (a16),SP
-        [](CPU *cpu) {},                            // 0x09 ADD HL,BC
-        [](CPU *cpu) { cpu->ldFromMem(cpu->A, cpu->BC); },              // 0x0A LD A,(BC)
-        [](CPU *cpu) { cpu->dec16(cpu->BC); },                          // 0x0B DEC BC
-        [](CPU *cpu) { cpu->inc8(cpu->C); },                            // 0x0C INC C
-        [](CPU *cpu) { cpu->dec8(cpu->C); },                            // 0x0D DEC C
-        [](CPU *cpu) {},                            // 0x0E LD C,d8
+#warning need to be fixed
+        [](CPU *cpu) { cpu->ldMemA16_SP(); },                             // 0x08 LD (a16),SP
+        [](CPU *cpu) { cpu->addHL_Reg16(cpu->BC); },                      // 0x09 ADD HL,BC
+        [](CPU *cpu) { cpu->ldA_MemReg16(cpu->BC); },                     // 0x0A LD A,(BC)
+        [](CPU *cpu) { cpu->decReg16(cpu->BC); },                      // 0x0B DEC BC
+        [](CPU *cpu) { cpu->incReg8(cpu->C); },                        // 0x0C INC C
+        [](CPU *cpu) { cpu->decReg8(cpu->C); },                        // 0x0D DEC C
+        [](CPU *cpu) { cpu->ldReg8_d8(cpu->C); },                      // 0x0E LD C,d8
         [](CPU *cpu) {},                            // 0x0F RRCA
 
-        [](CPU *cpu) {},                            // 0x00
-        [](CPU *cpu) {},                            // 0x11
-        [](CPU *cpu) { cpu->ldToMem(cpu->DE, cpu->A); },                  // 0x12 LD (DE),A
-        [](CPU *cpu) {},                            // 0x13
-        [](CPU *cpu) {},                            // 0x14
-        [](CPU *cpu) {},                            // 0x15
-        [](CPU *cpu) {},                            // 0x16
-        [](CPU *cpu) {},                            // 0x17
-        [](CPU *cpu) {},                            // 0x18
-        [](CPU *cpu) {},                            // 0x19
-        [](CPU *cpu) {},                            // 0x1A
-        [](CPU *cpu) {},                            // 0x1B
-        [](CPU *cpu) {},                            // 0x1C
-        [](CPU *cpu) {},                            // 0x1D
-        [](CPU *cpu) {},                            // 0x1E
-        [](CPU *cpu) {},                            // 0x1F
+        [](CPU *cpu) {},                            // 0x10 STOP 0
+        [](CPU *cpu) { cpu->ldReg16_d16(cpu->DE); },                   // 0x11 LD DE,d16
+        [](CPU *cpu) { cpu->ldMemReg16_A(cpu->DE); },                  // 0x12 LD (DE),A
+        [](CPU *cpu) { cpu->incReg16(cpu->DE); },                      // 0x13 INC DE
+        [](CPU *cpu) { cpu->incReg8(cpu->D); },                        // 0x14 INC D
+        [](CPU *cpu) { cpu->decReg8(cpu->D); },                        // 0x15 DEC D
+        [](CPU *cpu) { cpu->ldReg8_d8(cpu->D); },                      // 0x16 LD D,d8
+        [](CPU *cpu) {},                            // 0x17 RLA
+        [](CPU *cpu) {},                            // 0x18 JR r8
+        [](CPU *cpu) { cpu->addHL_Reg16(cpu->DE); },                      // 0x19 ADD HL,DE
+        [](CPU *cpu) { cpu->ldA_MemReg16(cpu->DE); },                  // 0x1A LD A,(DE)
+        [](CPU *cpu) { cpu->decReg16(cpu->DE); },                      // 0x1B DEC DE
+        [](CPU *cpu) { cpu->incReg8(cpu->E); },                        // 0x1C INC E
+        [](CPU *cpu) { cpu->decReg8(cpu->E); },                        // 0x1D DEC E
+        [](CPU *cpu) { cpu->ldReg8_d8(cpu->E); },                      // 0x1E LD E,d8
+        [](CPU *cpu) {},                            // 0x1F RRA
 
-        [](CPU *cpu) {},                            // 0x20
-        [](CPU *cpu) {},                            // 0x21
-        [](CPU *cpu) {},                            // 0x22
-        [](CPU *cpu) {},                            // 0x23
-        [](CPU *cpu) {},                            // 0x24
-        [](CPU *cpu) {},                            // 0x25
-        [](CPU *cpu) {},                            // 0x26
-        [](CPU *cpu) {},                            // 0x27
-        [](CPU *cpu) {},                            // 0x28
-        [](CPU *cpu) {},                            // 0x29
-        [](CPU *cpu) {},                            // 0x2A
-        [](CPU *cpu) {},                            // 0x2B
-        [](CPU *cpu) {},                            // 0x2C
-        [](CPU *cpu) {},                            // 0x2D
-        [](CPU *cpu) {},                            // 0x2E
-        [](CPU *cpu) {},                            // 0x2F
+        [](CPU *cpu) {},                            // 0x20 JR NZ,r8
+        [](CPU *cpu) { cpu->ldReg16_d16(cpu->HL); },                   // 0x21 LD HL,d16
+        [](CPU *cpu) { cpu->ldMemHLplus_A(); },                           // 0x22 LD (HL+),A
+        [](CPU *cpu) { cpu->incReg16(cpu->HL); },                      // 0x23 INC HL
+        [](CPU *cpu) { cpu->incReg8(cpu->H); },                        // 0x24 INC H
+        [](CPU *cpu) { cpu->decReg8(cpu->H); },                        // 0x25 DEC H
+        [](CPU *cpu) { cpu->ldReg8_d8(cpu->H); },                      // 0x26 LD H,d8
+        [](CPU *cpu) {  },                            // 0x27 DAA
 
-        [](CPU *cpu) {},                            // 0x30
-        [](CPU *cpu) {},                            // 0x31
-        [](CPU *cpu) {},                            // 0x32
-        [](CPU *cpu) {},                            // 0x33
-        [](CPU *cpu) {},                            // 0x34
-        [](CPU *cpu) {},                            // 0x35
-        [](CPU *cpu) {},                            // 0x36
-        [](CPU *cpu) {},                            // 0x37
-        [](CPU *cpu) {},                            // 0x38
-        [](CPU *cpu) {},                            // 0x39
-        [](CPU *cpu) {},                            // 0x3A
-        [](CPU *cpu) {},                            // 0x3B
-        [](CPU *cpu) { cpu->inc8(cpu->A); },                            // 0x3C INC A
-        [](CPU *cpu) {},                            // 0x3D
-        [](CPU *cpu) {},                            // 0x3E
-        [](CPU *cpu) {},                            // 0x3F
+        [](CPU *cpu) {  },                            // 0x28 JR Z,r8
+        [](CPU *cpu) { cpu->addHL_HL(); },                                // 0x29 ADD HL,HL
+        [](CPU *cpu) { cpu->ldA_MemHLplus(); },                           // 0x2A LD A,(HL+)
+        [](CPU *cpu) { cpu->decReg16(cpu->HL); },                      // 0x2B DEC HL
+        [](CPU *cpu) { cpu->incReg8(cpu->L); },                        // 0x2C INC L
+        [](CPU *cpu) { cpu->decReg8(cpu->L); },                        // 0x2D DEC L
+        [](CPU *cpu) { cpu->ldReg8_d8(cpu->L); },                      // 0x2E LD L,d8
+        [](CPU *cpu) {},                            // 0x2F CPL
+
+        [](CPU *cpu) {},                            // 0x30 JR NC,r8
+        [](CPU *cpu) { cpu->ldReg16_d16(cpu->SP); },                   // 0x31 LD SP,d16
+        [](CPU *cpu) { cpu->ldMemHLminus_A(); },                          // 0x32 LD (HL-),A
+        [](CPU *cpu) { cpu->incReg16(cpu->SP); },                      // 0x33 INC SP
+        [](CPU *cpu) { cpu->incMemHL(); },                                // 0x34 INC (HL)
+        [](CPU *cpu) { cpu->decMemHL(); },                                // 0x35 DEC (HL)
+        [](CPU *cpu) { cpu->ldMemHL_d8(); },                              // 0x36 LD (HL),d8
+        [](CPU *cpu) {},                            // 0x37 SCF
+
+        [](CPU *cpu) {},                            // 0x38 JR C,r8
+        [](CPU *cpu) { cpu->addHL_Reg16(cpu->SP); },                      // 0x39 ADD HL,SP
+        [](CPU *cpu) { cpu->ldA_MemHLminus(); },                          // 0x3A LD A,(HL-)
+        [](CPU *cpu) { cpu->decReg16(cpu->SP); },                      // 0x3B DEC SP
+        [](CPU *cpu) { cpu->incReg8(cpu->A); },                        // 0x3C INC A
+        [](CPU *cpu) { cpu->decReg8(cpu->A); },                        // 0x3D DEC A
+        [](CPU *cpu) { cpu->ldReg8_d8(cpu->A); },                      // 0x3E LD A,d8
+        [](CPU *cpu) {},                            // 0x3F CCF
 #warning ld B in B look for optimisation
         [](CPU *cpu) { cpu->ld(cpu->B, cpu->B); },  // 0x40 LD B,B
         [](CPU *cpu) { cpu->ld(cpu->B, cpu->C); },  // 0x41 LD B,C
@@ -102,7 +105,7 @@ namespace emulator
         [](CPU *cpu) { cpu->ld(cpu->B, cpu->E); },  // 0x43 LD B,E
         [](CPU *cpu) { cpu->ld(cpu->B, cpu->H); },  // 0x44 LD B,H
         [](CPU *cpu) { cpu->ld(cpu->B, cpu->L); },  // 0x45 LD B,L
-        [](CPU *cpu) { cpu->ldFromMem(cpu->B, cpu->HL); },            // 0x46 LD B,(HL)
+        [](CPU *cpu) { cpu->ldReg8_MemHL(cpu->B); },            // 0x46 LD B,(HL)
         [](CPU *cpu) { cpu->ld(cpu->B, cpu->A); },  // 0x47 LD B,A
 
         [](CPU *cpu) { cpu->ld(cpu->C, cpu->B); },  // 0x48 LD C,B
@@ -111,7 +114,7 @@ namespace emulator
         [](CPU *cpu) { cpu->ld(cpu->C, cpu->E); },  // 0x4B LD C,E
         [](CPU *cpu) { cpu->ld(cpu->C, cpu->H); },  // 0x4C LD C,H
         [](CPU *cpu) { cpu->ld(cpu->C, cpu->L); },  // 0x4D LD C,L
-        [](CPU *cpu) { cpu->ldFromMem(cpu->C, cpu->HL); },            // 0x4E LD C,(HL)
+        [](CPU *cpu) { cpu->ldReg8_MemHL(cpu->C); },            // 0x4E LD C,(HL)
         [](CPU *cpu) { cpu->ld(cpu->C, cpu->A); },  // 0x4F LD C,A
 
         [](CPU *cpu) { cpu->ld(cpu->D, cpu->B); },  // 0x50 LD D,B
@@ -120,7 +123,7 @@ namespace emulator
         [](CPU *cpu) { cpu->ld(cpu->D, cpu->E); },  // 0x53 LD D,E
         [](CPU *cpu) { cpu->ld(cpu->D, cpu->H); },  // 0x54 LD D,H
         [](CPU *cpu) { cpu->ld(cpu->D, cpu->L); },  // 0x55 LD D,L
-        [](CPU *cpu) { cpu->ldFromMem(cpu->D, cpu->HL); },                 // 0x56 LD D,(HL)
+        [](CPU *cpu) { cpu->ldReg8_MemHL(cpu->D); },                 // 0x56 LD D,(HL)
         [](CPU *cpu) { cpu->ld(cpu->D, cpu->A); },  // 0x57 LD D,A
 
         [](CPU *cpu) { cpu->ld(cpu->E, cpu->B); },  // 0x58 LD E,B
@@ -129,7 +132,7 @@ namespace emulator
         [](CPU *cpu) { cpu->ld(cpu->E, cpu->E); },  // 0x5B LD E,E
         [](CPU *cpu) { cpu->ld(cpu->E, cpu->H); },  // 0x5C LD E,H
         [](CPU *cpu) { cpu->ld(cpu->E, cpu->L); },  // 0x5D LD E,L
-        [](CPU *cpu) { cpu->ldFromMem(cpu->E, cpu->HL); },            // 0x5E LD E,(HL)
+        [](CPU *cpu) { cpu->ldReg8_MemHL(cpu->E); },            // 0x5E LD E,(HL)
         [](CPU *cpu) { cpu->ld(cpu->E, cpu->A); },  // 0x5F LD E,A
 
         [](CPU *cpu) { cpu->ld(cpu->H, cpu->B); },  // 0x60 LD H,B
@@ -138,7 +141,7 @@ namespace emulator
         [](CPU *cpu) { cpu->ld(cpu->H, cpu->E); },  // 0x63 LD H,E
         [](CPU *cpu) { cpu->ld(cpu->H, cpu->H); },  // 0x64 LD H,H
         [](CPU *cpu) { cpu->ld(cpu->H, cpu->L); },  // 0x65 LD H,L
-        [](CPU *cpu) { cpu->ldFromMem(cpu->H, cpu->HL); },            // 0x66 LD H,(HL)
+        [](CPU *cpu) { cpu->ldReg8_MemHL(cpu->H); },            // 0x66 LD H,(HL)
         [](CPU *cpu) { cpu->ld(cpu->H, cpu->A); },  // 0x67 LD H,A
 
         [](CPU *cpu) { cpu->ld(cpu->L, cpu->B); },  // 0x68 LD L,B
@@ -147,19 +150,19 @@ namespace emulator
         [](CPU *cpu) { cpu->ld(cpu->L, cpu->E); },  // 0x6B LD L,E
         [](CPU *cpu) { cpu->ld(cpu->L, cpu->H); },  // 0x6C LD L,H
         [](CPU *cpu) { cpu->ld(cpu->L, cpu->L); },  // 0x6D LD L,L
-        [](CPU *cpu) { cpu->ldFromMem(cpu->L, cpu->HL); },            // 0x6E LD L,(HL)
+        [](CPU *cpu) { cpu->ldReg8_MemHL(cpu->L); },            // 0x6E LD L,(HL)
         [](CPU *cpu) { cpu->ld(cpu->L, cpu->A); },  // 0x6F LD L,A
 
-        [](CPU *cpu) { cpu->ldToMem(cpu->HL, cpu->B); },                // 0x70 LD (HL),B
-        [](CPU *cpu) { cpu->ldToMem(cpu->HL, cpu->C); },                // 0x71 LD (HL),C
-        [](CPU *cpu) { cpu->ldToMem(cpu->HL, cpu->D); },                // 0x72 LD (HL),D
-        [](CPU *cpu) { cpu->ldToMem(cpu->HL, cpu->E); },                // 0x73 LD (HL),E
-        [](CPU *cpu) { cpu->ldToMem(cpu->HL, cpu->H); },                // 0x74 LD (HL),H
-        [](CPU *cpu) { cpu->ldToMem(cpu->HL, cpu->L); },                // 0x75 LD (HL),L
+        [](CPU *cpu) { cpu->ldMemHL_Reg8(cpu->B); },                // 0x70 LD (HL),B
+        [](CPU *cpu) { cpu->ldMemHL_Reg8(cpu->C); },                // 0x71 LD (HL),C
+        [](CPU *cpu) { cpu->ldMemHL_Reg8(cpu->D); },                // 0x72 LD (HL),D
+        [](CPU *cpu) { cpu->ldMemHL_Reg8(cpu->E); },                // 0x73 LD (HL),E
+        [](CPU *cpu) { cpu->ldMemHL_Reg8(cpu->H); },                // 0x74 LD (HL),H
+        [](CPU *cpu) { cpu->ldMemHL_Reg8(cpu->L); },                // 0x75 LD (HL),L
 
         [](CPU *cpu) {},                            // 0x76 HALT
 
-        [](CPU *cpu) { cpu->ldToMem(cpu->HL, cpu->A); },                 // 0x77 LD (HL),A
+        [](CPU *cpu) { cpu->ldMemHL_Reg8(cpu->A); },                 // 0x77 LD (HL),A
 
         [](CPU *cpu) { cpu->ld(cpu->A, cpu->B); },  // 0x78 LD A,B
         [](CPU *cpu) { cpu->ld(cpu->A, cpu->C); },  // 0x79 LD A,C
@@ -167,7 +170,7 @@ namespace emulator
         [](CPU *cpu) { cpu->ld(cpu->A, cpu->E); },  // 0x7B LD A,E
         [](CPU *cpu) { cpu->ld(cpu->A, cpu->H); },  // 0x7C LD A,H
         [](CPU *cpu) { cpu->ld(cpu->A, cpu->L); },  // 0x7D LD A,L
-        [](CPU *cpu) { cpu->ldFromMem(cpu->A, cpu->HL); },  // 0x7E LD A,(HL)
+        [](CPU *cpu) { cpu->ldReg8_MemHL(cpu->A); },  // 0x7E LD A,(HL)
         [](CPU *cpu) { cpu->ld(cpu->A, cpu->A); },  // 0x7F LD A,A
 
         [](CPU *cpu) { cpu->add(cpu->B); },     // 0x80
@@ -270,27 +273,39 @@ namespace emulator
 
     }
 
-    void CPU::inc16(uint16_t &reg)
+    void CPU::incReg16(uint16_t &reg)
     {
         ++reg;
     }
 
-    void CPU::inc8(uint8_t &reg)
+    void CPU::incReg8(uint8_t &reg)
     {
         uint8_t newFlags = F & CARRY_FLAG_MASK;
 
         ++reg;
-        newFlags |= (reg == 0x00) ? ZERO_FLAG_MASK | HALF_CARRY_FLAG_MASK :
-            ((reg & 0x0F) == 0x00) ? HALF_CARRY_FLAG_MASK : 0;
+        newFlags |= ((reg == 0x00) ? ZERO_FLAG_MASK |
+            HALF_CARRY_FLAG_MASK : (((reg & 0x0F) == 0x00) ? HALF_CARRY_FLAG_MASK : 0));
         F = newFlags;
     }
 
-    void CPU::dec16(uint16_t &reg)
+#warning just an exemple can be implemented well better
+    void CPU::incMemHL()
+    {
+        uint8_t value = readMemory(HL);
+        ++value;
+        writeMemory(HL, value);
+
+        F = (F & CARRY_FLAG_MASK) |
+            ((value == 0) ? ZERO_FLAG_MASK : 0) |
+            (((value & 0x0F) == 0x00) ? HALF_CARRY_FLAG_MASK : 0);
+    }
+
+    void CPU::decReg16(uint16_t &reg)
     {
         --reg;
     }
 
-    void CPU::dec8(uint8_t &reg)
+    void CPU::decReg8(uint8_t &reg)
     {
         uint8_t newFlags = CARRY_FLAG_MASK | SUBTRACT_FLAG_MASK;
 
@@ -300,22 +315,87 @@ namespace emulator
         F = newFlags;
     }
 
+    void CPU::decMemHL()
+    {
+        uint8_t value = readMemory(HL);
+        --value;
+        writeMemory(HL, value);
+
+        F = (F & CARRY_FLAG_MASK) |
+            SUBTRACT_FLAG_MASK |
+            ((value == 0) ? ZERO_FLAG_MASK : 0) |
+            (((value & 0x0F) == 0x00) ? HALF_CARRY_FLAG_MASK : 0);
+    }
 
     void CPU::ld(uint8_t& dest, const uint8_t src)
     {
         dest = src;
     }
 
-    void CPU::ldFromMem(uint8_t &dest, const uint16_t addr)
+    void CPU::ldReg16_d16(uint16_t& reg)
     {
-        uint8_t valueAtMem = readMemory(addr);
+        reg = readNextWord();
+    }
+
+    void CPU::ldMemReg16_A(uint16_t &addr)
+    {
+        writeMemory(addr, A);
+    }
+
+    void CPU::ldReg8_d8(uint8_t &reg)
+    {
+        reg = readNextByte();
+    }
+
+    void CPU::ldMemA16_SP()
+    {
+
+    }
+
+    void CPU::ldA_MemReg16(uint16_t& reg)
+    {
+        A = readMemory(reg);
+    }
+
+    void CPU::ldMemHLplus_A()
+    {
+        writeMemory(HL, A);
+        ++HL;
+    }
+
+    void CPU::ldA_MemHLplus()
+    {
+        A = readMemory(HL);
+        ++HL;
+    }
+
+    void CPU::ldMemHLminus_A() {
+        writeMemory(HL, A);
+        HL--;
+    }
+
+    void CPU::ldMemHL_d8()
+    {
+#warning maybe bad
+        writeMemory(HL, readNextByte());
+    }
+
+    void CPU::ldA_MemHLminus()
+    {
+        A = readMemory(HL);
+        --HL;
+    }
+
+    void CPU::ldReg8_MemHL(uint8_t &dest)
+    {
+        uint8_t valueAtMem = readMemory(HL);
 
         dest = valueAtMem;
     }
 
-    void CPU::ldToMem(const uint16_t addr, const uint8_t val)
+    void CPU::ldMemHL_Reg8(const uint8_t val)
     {
-        writeMemory(addr, val);
+        writeMemory(HL, val);
     }
 
     void CPU::add(const uint8_t reg) {
@@ -341,6 +421,34 @@ namespace emulator
         F = newFlags |
             ((A == 0) ? ZERO_FLAG_MASK : 0) |
             ((result & 0x100) ? CARRY_FLAG_MASK : 0);
+    }
+
+    void CPU::addHL_Reg16(const uint16_t reg)
+    {
+        uint32_t result = HL + reg;
+
+        uint8_t newFlags = F & ZERO_FLAG_MASK;
+
+        newFlags |= (((HL & 0x0FFF) + (reg & 0x0FFF) >  0x7FF) ? HALF_CARRY_FLAG_MASK : 0) |
+            ((result > 0xFFFF) ? CARRY_FLAG_MASK : 0);
+
+        HL = result & 0xFFFF;
+
+        F = newFlags;
+    }
+
+    void CPU::addHL_HL()
+    {
+        const uint16_t result = HL + HL;
+
+        uint8_t newFlags = F & ZERO_FLAG_MASK;
+
+        newFlags |= (((HL & 0x0FFF) > 0x07FF) ? HALF_CARRY_FLAG_MASK : 0) |
+            ((result > 0xFFFF) ? CARRY_FLAG_MASK : 0);
+
+        HL = result & 0xFFFF;
+
+        F = newFlags;
     }
 
     void CPU::adc(const uint8_t reg) {

@@ -48,22 +48,34 @@ namespace emulator
         // Method to reset the CPU (initial state)
         void reset();
 
-        void inc16(uint16_t&);
+        void incReg16(uint16_t&);
+        void incReg8(uint8_t&);
+        void incMemHL();
 
-        void inc8(uint8_t&);
-
-        void dec8(uint8_t&);
-
-        void dec16(uint16_t&);
+        void decReg8(uint8_t&);
+        void decReg16(uint16_t&);
+        void decMemHL();
 
         void ld(uint8_t&, uint8_t);
+        void ldReg16_d16(uint16_t&);
+        void ldMemReg16_A(uint16_t&);
+        void ldReg8_d8(uint8_t&);
+        void ldMemA16_SP();
+        void ldA_MemReg16(uint16_t&);
+        void ldMemHLplus_A();
+        void ldA_MemHLplus();
+        void ldMemHLminus_A();
+        void ldMemHL_d8();
+        void ldA_MemHLminus();
+        void ldReg8_MemHL(uint8_t&);
+        void ldMemHL_Reg8(uint8_t);
 
-        void ldFromMem(uint8_t&, uint16_t);
-
-        void ldToMem(uint16_t, uint8_t);
 
         void add(uint8_t);
         void add_a_a();
+
+        void addHL_Reg16(uint16_t);
+        void addHL_HL();
 
         void adc(uint8_t);
         void adc_a_a();
@@ -159,6 +171,12 @@ namespace emulator
         void decode(); // Decode the fetched instruction
 
         uint8_t readMemory(const uint8_t reg) { return 0; }
+
+        uint16_t readNextWord() { return 0; }
+        uint8_t readNextByte() { return 0; }
+
+        void write16Bits(uint16_t, uint16_t) {  }
+
         void writeMemory(uint16_t addr, uint8_t val) { /* memory[addr] = val; */}
 
         // Helper methods for instruction decoding
