@@ -14,7 +14,9 @@
 add_subdirectory(src/cpu)
 
 # Create the executable for the application
-add_executable(GColorEmulator src/main.cpp)
+add_executable(GColorEmulator src/main.cpp
+        src/membus/membus.cpp
+        src/membus/membus.hpp)
 
 # Link internal libraries (like CPU)
 target_link_libraries(GColorEmulator PRIVATE cpu)

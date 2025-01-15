@@ -18,7 +18,7 @@
 
 namespace emulator
 {
-    CPU::CPU(): AF(), BC(), DE(),
+    CPU::CPU(): cycles(0), AF(), BC(), DE(),
     HL(),     // Program starts at 0x0100 in most GB ROMs
     PC(0x0100),      // Stack Pointer initialization
     SP(0xFFFE)
@@ -27,14 +27,14 @@ namespace emulator
     }
 
     std::array<void (*)(CPU*), 256> CPU::instruction_table = {
-        [](CPU *cpu) { /* Does nothing, just consumes one CPU cycle */ },  // 0x00 NOP
+        [](CPU *cpu) { cpu->nop(); },                                   // 0x00 NOP
         [](CPU *cpu) { cpu->ldReg16_d16(cpu->BC); },                    // 0x01 LD BC,d16
         [](CPU *cpu) { cpu->ldMemReg16_A(cpu->BC); },                   // 0x02 LD (BC),A
         [](CPU *cpu) { cpu->incReg16(cpu->BC); },                       // 0x03 INC BC
         [](CPU *cpu) { cpu->incReg8(cpu->B); },                         // 0x04 INC B
         [](CPU *cpu) { cpu->decReg8(cpu->B); },                         // 0x05 DEC B
         [](CPU *cpu) { cpu->ldReg8_d8(cpu->D); },                       // 0x06 LD B,d8
-        [](CPU *cpu) {},                            // 0x07 RLCA
+        [](CPU *cpu) { cpu->rlca(); },                            // 0x07 RLCA
 
 #warning need to be fixed
         [](CPU *cpu) { cpu->ldMemA16_SP(); },                             // 0x08 LD (a16),SP
@@ -273,9 +273,28 @@ namespace emulator
 
     }
 
+    void CPU::nop()
+    {
+        cycles += 4;
+    }
+
+    void CPU::rlca()
+    {
+        uint8_t carry = (A & 0x80) >> 7;
+        A = (A << 1) | carry;
+
+        F = (F & ~CARRY_FLAG_MASK) | (carry ? CARRY_FLAG_MASK : 0);
+
+        cycles += 4;
+    }
+
+
+
     void CPU::incReg16(uint16_t &reg)
     {
         ++reg;
+
+        cycles += 8;
     }
 
     void CPU::incReg8(uint8_t &reg)
@@ -286,6 +305,8 @@ namespace emulator
         newFlags |= ((reg == 0x00) ? ZERO_FLAG_MASK |
             HALF_CARRY_FLAG_MASK : (((reg & 0x0F) == 0x00) ? HALF_CARRY_FLAG_MASK : 0));
         F = newFlags;
+
+        cycles += 4;
     }
 
 #warning just an exemple can be implemented well better
@@ -313,6 +334,8 @@ namespace emulator
         newFlags |= (reg == 0x00) ? ZERO_FLAG_MASK :
             ((reg & 0x0F) == 0x0F) ? HALF_CARRY_FLAG_MASK : 0;
         F = newFlags;
+
+        cycles += 4;
     }
 
     void CPU::decMemHL()
@@ -335,16 +358,22 @@ namespace emulator
     void CPU::ldReg16_d16(uint16_t& reg)
     {
         reg = readNextWord();
+
+        cycles += 12;
     }
 
     void CPU::ldMemReg16_A(uint16_t &addr)
     {
         writeMemory(addr, A);
+
+        cycles += 8;
     }
 
     void CPU::ldReg8_d8(uint8_t &reg)
     {
         reg = readNextByte();
+
+        cycles += 8;
     }
 
     void CPU::ldMemA16_SP()

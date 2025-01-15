@@ -27,7 +27,7 @@
 constexpr uint8_t ZERO_FLAG_MASK = 0x80;  // Bit 7
 constexpr uint8_t SUBTRACT_FLAG_MASK = 0x40;  // Bit 6
 constexpr uint8_t HALF_CARRY_FLAG_MASK = 0x20;  // Bit 5
-constexpr uint8_t CARRY_FLAG_MASK = 0x10;  // Bit 4
+ uint8_t CARRY_FLAG_MASK = 0x10;  // Bit 4
 
 namespace emulator
 {
@@ -47,6 +47,9 @@ namespace emulator
 
         // Method to reset the CPU (initial state)
         void reset();
+
+        void nop();
+        void rlca();
 
         void incReg16(uint16_t&);
         void incReg8(uint8_t&);
@@ -128,6 +131,7 @@ namespace emulator
         void clearFlags() { F = 0; }
 
     private:
+        u_int32_t cycles;
         static std::array<void (*)(CPU*), 256> instruction_table;
 
         // Registers
